@@ -3,6 +3,7 @@
   <head>
   </head>
   <body>
+    <!-- A really ugly page that makes sure endpoints function before I do something nice -->
   	<div>Testing, CMS someday in the future</div>
   	<label for="title">Title:</label>
   	<input name="title"></input>
@@ -15,20 +16,107 @@
   	<button onclick="sendContents()">Send Contents</button>
 
   	<hr/>
+    <div id="textbox" class="textbox-dark">here is some text</div>
   	<button onclick="doTestCall()">test</button>
   	<style>
   		.preview {border: 1px dotted black;}
+      * {image-rendering: pixelated;}
+      .textbox-dark {
+        background-color: red;
+        background-image: var(--dark-black-textbox-bg);
+        background-size: contain;
+        color: #FFFFFF;
+      }
   	</style>
   	<script>
   		function sendContents(){
   			alert("send contents, update placeholder")
   		}
-  		async function doTestCall() {
-  			// general testing 
-        fetch("/api/fetchPixels?" +  new URLSearchParams({"images": ["image1", "image2"]}))
-        .then(response=>response.text())
-        .then(data=>{ console.log(data); })
+
+      async function getSpriteDict(slicesToGet) {
+        // group everything in one call later
+        let result = {}
+        const promiseArray = [];
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d")
+        const _imageMap = {}
+
+        const response = await fetch("/api/fetchPixels?" +  new URLSearchParams({"slices": slicesToGet}))
+        const data = await response.json()
+
+        // one for now
+        for (const [fileName, imageString] of Object.entries(data["Images"])) {
+          promiseArray.push(new Promise(resolve => {
+            const img = new Image();
+            img.onload = resolve;
+            img.src = "data:image/jpg;base64," + imageString;
+            _imageMap[fileName] = img
+          }))
+        };
+        await Promise.all(promiseArray)
+
+        slicesToGet.forEach((sliceName) => {
+          let slice = data["ImageDict"][sliceName]
+          canvas.width = slice["Width"]
+          canvas.height = slice["Height"]
+          ctx.drawImage(
+            _imageMap[slice["Image"]], 
+            slice["X"], 
+            slice["Y"], 
+            slice["Width"],
+            slice["Height"],
+            0, 0,
+            slice["Width"],
+            slice["Height"]
+            );
+          result[sliceName] = canvas.toDataURL()
+        })
+        return result
       }
+  		async function doTestCall() {
+        var slices = await getSpriteDict(["black_textbox_bg"]);
+        // do whatever needs to be done with the dict you get back
+        addStylesheetRules([
+          [
+            ":root",
+            ["--dark-black-textbox-bg", "url(" + slices["black_textbox_bg"] + ")"]
+          ]
+        ])
+      }
+
+      //https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleSheet/insertRule
+      async function addStylesheetRules(rules) {
+        const styleEl = document.createElement("style");
+
+        // Append <style> element to <head>
+        document.head.appendChild(styleEl);
+
+        // Grab style element's sheet
+        const styleSheet = styleEl.sheet;
+
+        for (let rule of rules) {
+          let i = 1,
+            selector = rule[0],
+            propStr = "";
+          // If the second argument of a rule is an array of arrays, correct our variables.
+          if (Array.isArray(rule[1][0])) {
+            rule = rule[1];
+            i = 0;
+          }
+
+          for (; i < rule.length; i++) {
+            const prop = rule[i];
+            propStr += `${prop[0]}: ${prop[1]}${prop[2] ? " !important" : ""};\n`;
+          }
+
+          // Insert CSS Rule
+          styleSheet.insertRule(
+            `${selector}{${propStr}}`,
+            styleSheet.cssRules.length,
+          );
+        }
+      }
+
     </script>
   </body>
 </html>

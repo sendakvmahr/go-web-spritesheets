@@ -43,21 +43,25 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	if endpoint == "fetchPixels" {
 		handlePixelFetch(w, r)
 	} else {
-		fmt.Fprintf(w, "<h1>%s</h1>", endpoint)
+		fmt.Fprintf(w, "<h1>%s - you misspelled something</h1>", endpoint)
 	}
 }
 
 func handlePixelFetch(w http.ResponseWriter, r *http.Request) {
+	// pretty much mocked up to get everything in an okay points
 	var ImageMap = map[string]spritesheets.SpriteSlice{}
-	ImageMap["Test"] = spritesheets.SpriteSlice{
-		Image: "One",
-		X : 2,
-		Y: 3,
-		Width: 4,
-		Height: 5,
+	ImageMap["black_textbox_bg"] = spritesheets.SpriteSlice{
+		Image: "textboxes",
+		X : 14,
+		Y: 17,
+		Width: 2,
+		Height: 2,
 	}
+	// plop the b64 image as is for now
 	data := spritesheets.SpriteSheetResponse{
-		Images : []string{"One", "Two"},
+		Images : map[string]string{
+			"textboxes" : "R0lGODdhEgATAHcAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQJCgAAACwAAAAAEgATAIQAAAAAAAAHEAspVjIcKFYcTHZPQGlGnWZcaaZzic+RsKyW46ixqcG+vtGwxsHS4t7R0ebr9PD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFj2ATjWTUACjArGiUvi7KIAXCAPGLywgkQbYcTFaQGAsMYSo28wGTulZqVrsppVPWLio0eFGi0uiEMigcCgMgLB64zQqCIn0dHBYDg4MAIDgMSnYLB3lzcnRuAwCChGVnaTgDg4yKKV5qkXeaAzEJKDYIO5RbD54MElYoiVgPpaBrYmMopQABAlG4ngACASghADs=",
+		},
 		ImageDict: ImageMap,
 	}
 	w.Header().Set("Content-Type", "application/json")

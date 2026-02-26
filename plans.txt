@@ -17,3 +17,11 @@ response {
 }
 
 There should be a nice db that has a sprite -> spritesheet and sprite -> dimensions stored, a sqlite file is probably enough
+
+
+next: make it smart with example_image
+lint lint lint
+tests
+make/load pages
+dump react
+upload images

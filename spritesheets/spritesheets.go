@@ -9,6 +9,6 @@ type SpriteSlice struct {
 }
 
 type SpriteSheetResponse struct {
-	Images []string
+	Images map[string]string
 	ImageDict map[string]SpriteSlice
 }
