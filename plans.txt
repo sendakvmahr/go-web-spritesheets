@@ -1,0 +1,19 @@
+Sample spritesheets
+This is meant for TINY images - so that's why encoding is chosen instead of a link to said images.
+There are probably nice ui sets around the 64x or 128x range, but I'm not focusing on them now.
+
+request {
+	"images": ["image1.png", "image2.png"],
+}
+
+response {
+	"images": {
+		"merged_image1": "encoded_string", 
+		"merged_image2": "encoded_string",
+		...
+	},
+	"image1": ["merged_image_name", x, y, width, height],
+	...
+}
+
+There should be a nice db that has a sprite -> spritesheet and sprite -> dimensions stored, a sqlite file is probably enough

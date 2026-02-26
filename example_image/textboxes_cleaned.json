@@ -1,0 +1,9 @@
+{
+ "black_textbox_bg": {"x": 14, "y": 17, "w": 2, "h": 2 },
+ "black_textbox" : {"x": 11, "y": 7, "w": 7, "h": 7 },
+ "white_textbox" : {"x": 11, "y": 0, "w": 7, "h": 7 },
+ "checked" : {"x": 0, "y": 9, "w": 11, "h": 9 },
+ "unchecked" : {"x": 0, "y": 0, "w": 11, "h": 9 },
+ "arrow" : {"x": 11, "y": 14, "w": 3, "h": 5 },
+ "bullet" : {"x": 14, "y": 14, "w": 3, "h": 3 } }
+}
