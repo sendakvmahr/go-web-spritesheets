@@ -23,10 +23,12 @@
   		function sendContents(){
   			alert("send contents, update placeholder")
   		}
-  		function doTestCall() {
+  		async function doTestCall() {
   			// general testing 
-  			alert("put call here")
-  		}
-  	</script>
+        fetch("/api/fetchPixels?" +  new URLSearchParams({"images": ["image1", "image2"]}))
+        .then(response=>response.text())
+        .then(data=>{ console.log(data); })
+      }
+    </script>
   </body>
 </html>

@@ -1,5 +1,5 @@
 # build
-server
+go-web-spritesheets
 
 # Binaries for programs and plugins
 *.exe
